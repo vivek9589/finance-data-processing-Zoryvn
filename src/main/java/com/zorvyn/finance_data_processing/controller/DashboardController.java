@@ -19,7 +19,7 @@ public class DashboardController {
 
     private final DashboardService dashboardService;
 
-    // All roles (ADMIN, ANALYST, VIEWER) can access dashboard summaries
+
     @PreAuthorize("hasAnyRole('ADMIN','ANALYST','VIEWER')")
     @GetMapping("/{userId}/summary")
     public ResponseEntity<ApiResponse<DashboardSummaryResponse>> getDashboardSummary(

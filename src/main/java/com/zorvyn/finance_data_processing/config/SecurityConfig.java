@@ -1,5 +1,6 @@
 package com.zorvyn.finance_data_processing.config;
 
+import com.zorvyn.finance_data_processing.auth.security.JwtAuthenticationFilter;
 import com.zorvyn.finance_data_processing.security.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -10,8 +11,8 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableMethodSecurity
@@ -19,14 +20,12 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private final CustomUserDetailsService userDetailsService;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
-    public NoOpPasswordEncoder passwordEncoder() {
-        // WARNING: This stores and compares passwords in plain text
-        return (NoOpPasswordEncoder) NoOpPasswordEncoder.getInstance();
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
-
-
 
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
@@ -43,15 +42,17 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(csrf -> csrf.disable())
+        http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .requestMatchers("/api/dashboard/**").authenticated()
                         .requestMatchers("/api/users/**").authenticated()
                         .requestMatchers("/api/records/**").authenticated()
                         .anyRequest().permitAll()
                 )
-                .httpBasic(basic -> {});
+                .authenticationProvider(authenticationProvider())
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
