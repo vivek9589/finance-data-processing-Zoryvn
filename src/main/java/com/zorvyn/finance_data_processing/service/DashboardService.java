@@ -6,6 +6,10 @@ import com.zorvyn.finance_data_processing.dto.response.DashboardSummaryResponse;
 
 import java.util.UUID;
 
+import com.zorvyn.finance_data_processing.dto.response.DashboardSummaryResponse;
+
+import java.util.UUID;
+
 public interface DashboardService {
 
     /**
