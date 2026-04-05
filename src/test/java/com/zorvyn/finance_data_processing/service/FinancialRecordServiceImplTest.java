@@ -36,7 +36,7 @@ class FinancialRecordServiceImplTest {
     @InjectMocks
     private FinancialRecordServiceImpl service;
 
-    // 🔧 Helper methods
+    // Helper methods
     private User validUser(UUID id) {
         return User.builder()
                 .id(id)
@@ -55,7 +55,7 @@ class FinancialRecordServiceImplTest {
         return req;
     }
 
-    // ✅ TEST 1: Create Record Success
+    //  TEST 1: Create Record Success
     @Test
     void shouldCreateRecordSuccessfully() {
         UUID userId = UUID.randomUUID();
@@ -80,7 +80,7 @@ class FinancialRecordServiceImplTest {
         assertEquals("INCOME", response.getType());
     }
 
-    // ❌ TEST 2: Invalid Amount
+    //  TEST 2: Invalid Amount
     @Test
     void shouldThrowExceptionForInvalidAmount() {
         FinancialRecordRequest request = new FinancialRecordRequest();
@@ -90,7 +90,7 @@ class FinancialRecordServiceImplTest {
                 () -> service.createRecord(request));
     }
 
-    // ❌ TEST 3: User Not Found
+    // TEST 3: User Not Found
     @Test
     void shouldThrowExceptionWhenUserNotFound() {
         UUID userId = UUID.randomUUID();
@@ -102,7 +102,7 @@ class FinancialRecordServiceImplTest {
                 () -> service.createRecord(request));
     }
 
-    // ❌ TEST 4: Future Date
+    // TEST 4: Future Date
     @Test
     void shouldThrowExceptionForFutureDate() {
         UUID userId = UUID.randomUUID();
@@ -113,7 +113,7 @@ class FinancialRecordServiceImplTest {
                 () -> service.createRecord(request));
     }
 
-    // ✅ TEST 5: Get Records Success
+    // TEST 5: Get Records Success
     @Test
     void shouldReturnRecordsByUser() {
         UUID userId = UUID.randomUUID();
@@ -140,7 +140,7 @@ class FinancialRecordServiceImplTest {
         assertFalse(result.isEmpty());
     }
 
-    // ❌ TEST 6: No Records Found
+    // TEST 6: No Records Found
     @Test
     void shouldThrowExceptionWhenNoRecordsFound() {
         UUID userId = UUID.randomUUID();
@@ -154,7 +154,7 @@ class FinancialRecordServiceImplTest {
                 () -> service.getRecordsByUser(userId, pageable));
     }
 
-    // ✅ TEST 7: Update Record Success
+    // TEST 7: Update Record Success
     @Test
     void shouldUpdateRecordSuccessfully() {
         UUID recordId = UUID.randomUUID();
@@ -176,7 +176,7 @@ class FinancialRecordServiceImplTest {
         assertNotNull(response);
     }
 
-    // ❌ TEST 8: UserId Mismatch
+    //  TEST 8: UserId Mismatch
     @Test
     void shouldThrowExceptionWhenUserMismatch() {
         UUID recordId = UUID.randomUUID();
@@ -195,7 +195,7 @@ class FinancialRecordServiceImplTest {
                 () -> service.updateRecord(recordId, request));
     }
 
-    // ✅ TEST 9: Soft Delete Success
+    // TEST 9: Soft Delete Success
     @Test
     void shouldSoftDeleteRecord() {
         UUID recordId = UUID.randomUUID();
@@ -217,7 +217,7 @@ class FinancialRecordServiceImplTest {
         verify(recordRepository).save(record);
     }
 
-    // ❌ TEST 10: Record Already Deleted
+    // TEST 10: Record Already Deleted
     @Test
     void shouldThrowExceptionWhenRecordAlreadyDeleted() {
         UUID recordId = UUID.randomUUID();
@@ -233,7 +233,7 @@ class FinancialRecordServiceImplTest {
                 () -> service.softDeleteRecord(recordId));
     }
 
-    // ✅ TEST 11: Filter Records Success
+    // TEST 11: Filter Records Success
     @Test
     void shouldFilterRecordsSuccessfully() {
         UUID userId = UUID.randomUUID();
@@ -252,16 +252,21 @@ class FinancialRecordServiceImplTest {
                         .build()
         ));
 
-        when(recordRepository
-                .findByUserIdAndTypeAndCategoryAndTransactionDateBetweenAndIsDeletedFalse(
-                        any(), any(), any(), any(), any(), any()))
-                .thenReturn(page);
+        when(recordRepository.filterRecords(
+                any(UUID.class),
+                any(String.class),
+                any(String.class),
+                any(LocalDate.class),
+                any(LocalDate.class),
+                any(Pageable.class)
+        )).thenReturn(page);
 
         var result = service.filterRecords(userId, "INCOME", "Salary",
                 LocalDate.now().minusDays(5), LocalDate.now(), pageable);
 
         assertFalse(result.isEmpty());
     }
+
     @Test
     void shouldThrowExceptionForInvalidDateRange() {
         UUID userId = UUID.randomUUID();

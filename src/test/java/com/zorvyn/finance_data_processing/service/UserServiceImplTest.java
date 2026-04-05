@@ -29,7 +29,7 @@ class UserServiceImplTest {
     @InjectMocks
     private UserServiceImpl userService;
 
-    // ✅ TEST 1: Create User Success
+    // TEST 1: Create User Success
     @Test
     void shouldCreateUserSuccessfully() {
         UserRequest request = new UserRequest();
@@ -56,7 +56,7 @@ class UserServiceImplTest {
         assertEquals(Role.ADMIN, response.getRole());
     }
 
-    // ✅ TEST 2: Duplicate Email
+    //  TEST 2: Duplicate Email
     @Test
     void shouldThrowExceptionWhenEmailAlreadyExists() {
         UserRequest request = new UserRequest();
@@ -69,7 +69,7 @@ class UserServiceImplTest {
                 () -> userService.createUser(request));
     }
 
-    // ✅ TEST 3: Get User By Email Success
+    //  TEST 3: Get User By Email Success
     @Test
     void shouldReturnUserByEmail() {
         String email = "vivek@test.com";
@@ -90,14 +90,14 @@ class UserServiceImplTest {
         assertEquals(email, response.getEmail());
     }
 
-    // ✅ TEST 4: Invalid Email Format
+    //  TEST 4: Invalid Email Format
     @Test
     void shouldThrowExceptionForInvalidEmail() {
         assertThrows(InvalidEmailException.class,
                 () -> userService.getUserByEmail("invalid-email"));
     }
 
-    // ✅ TEST 5: User Not Found
+    // TEST 5: User Not Found
     @Test
     void shouldThrowExceptionWhenUserNotFound() {
         when(userRepository.findByEmailAndIsDeletedFalse(anyString()))
@@ -128,7 +128,7 @@ class UserServiceImplTest {
         assertEquals(Role.ADMIN, response.getRole());
     }
 
-    // ✅ TEST 7: Update Role - User Not Found
+    //  TEST 7: Update Role - User Not Found
     @Test
     void shouldThrowExceptionWhenUpdatingRoleForNonExistingUser() {
         UUID userId = UUID.randomUUID();
@@ -144,7 +144,7 @@ class UserServiceImplTest {
                 () -> userService.updateUserRole(userId, Role.ADMIN));
     }
 
-    // ✅ TEST 8: Soft Delete Success
+    //  TEST 8: Soft Delete Success
     @Test
     void shouldSoftDeleteUser() {
         UUID userId = UUID.randomUUID();
@@ -166,7 +166,7 @@ class UserServiceImplTest {
         verify(userRepository).save(user);
     }
 
-    // ✅ TEST 9: Soft Delete Already Deleted
+    // TEST 9: Soft Delete Already Deleted
     @Test
     void shouldThrowExceptionWhenUserAlreadyDeleted() {
         UUID userId = UUID.randomUUID();

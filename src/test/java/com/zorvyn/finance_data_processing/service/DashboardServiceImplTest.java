@@ -57,14 +57,14 @@ class DashboardServiceImplTest {
                 .build();
     }
 
-    // ❌ TEST 1: Null UserId
+    //  TEST 1: Null UserId
     @Test
     void shouldThrowExceptionWhenUserIdNull() {
         assertThrows(InvalidUserIdException.class,
                 () -> service.getDashboardSummary(null));
     }
 
-    // ❌ TEST 2: User Not Found
+    //  TEST 2: User Not Found
     @Test
     void shouldThrowExceptionWhenUserNotFound() {
         UUID userId = UUID.randomUUID();
@@ -75,7 +75,7 @@ class DashboardServiceImplTest {
                 () -> service.getDashboardSummary(userId));
     }
 
-    // ❌ TEST 3: User Inactive
+    //  TEST 3: User Inactive
     @Test
     void shouldThrowExceptionWhenUserInactive() {
         UUID userId = UUID.randomUUID();
@@ -89,7 +89,7 @@ class DashboardServiceImplTest {
                 () -> service.getDashboardSummary(userId));
     }
 
-    // ✅ TEST 4: No Records → Empty Dashboard
+    // TEST 4: No Records → Empty Dashboard
     @Test
     void shouldReturnEmptyDashboardWhenNoRecords() {
         UUID userId = UUID.randomUUID();
@@ -107,7 +107,7 @@ class DashboardServiceImplTest {
         assertTrue(response.getWarnings().size() > 0);
     }
 
-    // ✅ TEST 5: Dashboard Calculation (CORE TEST 🔥)
+    //  TEST 5: Dashboard Calculation
     @Test
     void shouldCalculateDashboardCorrectly() {
         UUID userId = UUID.randomUUID();
@@ -136,7 +136,7 @@ class DashboardServiceImplTest {
         assertEquals(BigDecimal.valueOf(500), response.getNetBalance());
     }
 
-    // ✅ TEST 6: Category Wise Aggregation
+    //  TEST 6: Category Wise Aggregation
     @Test
     void shouldAggregateCategoryWiseTotals() {
         UUID userId = UUID.randomUUID();
