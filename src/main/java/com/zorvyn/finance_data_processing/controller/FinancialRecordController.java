@@ -7,6 +7,7 @@ import com.zorvyn.finance_data_processing.service.FinancialRecordService;
 import com.zorvyn.finance_data_processing.util.ApiResponseFactory;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -36,10 +37,11 @@ public class FinancialRecordController {
                 .body(ApiResponseFactory.success(saved, "Record created successfully", HttpStatus.CREATED.value()));
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','ANALYST','VIEWER')")
     @GetMapping("/user/{userId}")
+    @PreAuthorize("hasAnyRole('ADMIN','ANALYST','VIEWER')")
     public ResponseEntity<ApiResponse<Page<FinancialRecordResponse>>> getRecordsByUser(
             @PathVariable UUID userId,
+            @ParameterObject
             @PageableDefault(page = 0, size = 20, sort = "transactionDate", direction = Sort.Direction.DESC) Pageable pageable) {
 
         Page<FinancialRecordResponse> records = recordService.getRecordsByUser(userId, pageable);

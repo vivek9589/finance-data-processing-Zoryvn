@@ -92,17 +92,12 @@ public class FinancialRecordServiceImpl implements FinancialRecordService {
             throw new DatabaseException("Error creating financial record for userId: " + request.getUserId(), ex);
         }
     }
-
     @Override
     public Page<FinancialRecordResponse> getRecordsByUser(UUID userId, Pageable pageable) {
         log.info("Fetching financial records for userId: {}", userId);
 
         if (userId == null) {
             throw new InvalidUserIdException("UserId must not be null");
-        }
-
-        if (pageable == null) {
-            throw new InvalidPageRequestException("Pageable must not be null");
         }
 
         // Ensure user exists and is active
@@ -130,6 +125,7 @@ public class FinancialRecordServiceImpl implements FinancialRecordService {
             throw new DatabaseException("Error fetching financial records for userId: " + userId, ex);
         }
     }
+
 
     @Override
     public FinancialRecordResponse updateRecord(UUID recordId, FinancialRecordRequest request) {
