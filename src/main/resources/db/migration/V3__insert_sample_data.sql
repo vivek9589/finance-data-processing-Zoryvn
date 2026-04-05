@@ -8,7 +8,6 @@ VALUES
     (UUID_TO_BIN(UUID()), 'Charlie Viewer', 'charlie.viewer@example.com', 'VIEWER', 'ACTIVE', FALSE, '2026-04-04 15:55:03', '2026-04-04 15:55:03');
 
 -- Insert credentials (linking by user_id)
--- Make sure to match the UUIDs generated above if you want deterministic mapping
 INSERT INTO user_credentials (user_id, password_hash, is_active)
 SELECT id, '$2a$10$Cajovkdj.iEwnUAQI4NuOed3362qTUZHOtYfn882hcL/zWUU7ATo2', TRUE
 FROM users WHERE email = 'alice.admin@example.com';
