@@ -1,7 +1,6 @@
 package com.zorvyn.finance_data_processing.config;
 
 import com.zorvyn.finance_data_processing.auth.security.JwtAuthenticationFilter;
-import com.zorvyn.finance_data_processing.security.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final CustomUserDetailsService userDetailsService;
+    private final JwtAuthenticationFilter.CustomUserDetailsService userDetailsService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
