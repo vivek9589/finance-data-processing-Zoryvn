@@ -1,0 +1,42 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: finance-db-prod
+    restart: always
+    environment:
+      MYSQL_DATABASE: finance_db
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+    healthcheck:
+      # This command tells Docker to wait until MySQL actually accepts a ping
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - finance-net
+
+  app:
+    image: vivek9589/finance-app:latest
+    container_name: finance-app-prod
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy # <--- This is your "Condition"
+    ports:
+      - "8080:8080" # Standard web port for Oracle Cloud
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_NAME=finance_db
+      - DB_USER=root
+      - DB_PASSWORD=${DB_PASSWORD}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRATION=${JWT_EXPIRATION}
+    networks:
+      - finance-net
+
+networks:
+  finance-net:
+    driver: bridge

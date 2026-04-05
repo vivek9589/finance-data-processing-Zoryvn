@@ -1,0 +1,15 @@
+# Database Credentials
+# Use a strong, random password for Production (e.g., 24+ characters)
+DB_PASSWORD=Replace_With_A_Very_Strong_Random_Password
+
+# JWT Security Settings
+# This MUST be a long, random string (at least 32-64 characters)
+# Example: openssl rand -base64 48
+JWT_SECRET=Your_Ultra_Secure_Long_Random_String_Generated_For_Prod
+
+# 1 hour in milliseconds (3600000) or longer if desired
+JWT_EXPIRATION=3600000
+
+# Spring Boot Environment
+# This ensures the 'prod' profile is used inside the container
+SPRING_PROFILES_ACTIVE=prod
