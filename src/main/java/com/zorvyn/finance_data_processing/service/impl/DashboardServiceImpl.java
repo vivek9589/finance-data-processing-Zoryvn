@@ -1,7 +1,5 @@
 package com.zorvyn.finance_data_processing.service.impl;
 
-
-
 import com.zorvyn.finance_data_processing.dto.response.DashboardSummaryResponse;
 import com.zorvyn.finance_data_processing.dto.response.FinancialRecordResponse;
 import com.zorvyn.finance_data_processing.entity.FinancialRecord;
@@ -58,8 +56,11 @@ public class DashboardServiceImpl implements DashboardService {
         }
 
         if (records.isEmpty()) {
-            // Option A: return empty summary
             return DashboardSummaryResponse.builder()
+                    .userId(userId)
+                    .summaryPeriod(YearMonth.now().toString())
+                    .currency("INR")
+                    .hasData(false)
                     .totalIncome(BigDecimal.ZERO)
                     .totalExpenses(BigDecimal.ZERO)
                     .netBalance(BigDecimal.ZERO)
@@ -67,8 +68,8 @@ public class DashboardServiceImpl implements DashboardService {
                     .recentActivity(Collections.emptyList())
                     .monthlyTrends(Collections.emptyMap())
                     .weeklyTrends(Collections.emptyMap())
+                    .warnings(List.of("No financial records found for this user"))
                     .build();
-            // Option B: throw new RecordNotFoundException("No records found for userId: " + userId);
         }
 
         BigDecimal totalIncome = records.stream()
@@ -109,6 +110,10 @@ public class DashboardServiceImpl implements DashboardService {
                 ));
 
         return DashboardSummaryResponse.builder()
+                .userId(userId)
+                .summaryPeriod(YearMonth.now().toString())
+                .currency("INR")
+                .hasData(true)
                 .totalIncome(totalIncome)
                 .totalExpenses(totalExpenses)
                 .netBalance(netBalance)
@@ -116,6 +121,7 @@ public class DashboardServiceImpl implements DashboardService {
                 .recentActivity(recentActivity)
                 .monthlyTrends(monthlyTrends)
                 .weeklyTrends(weeklyTrends)
+                .warnings(Collections.emptyList())
                 .build();
     }
 
