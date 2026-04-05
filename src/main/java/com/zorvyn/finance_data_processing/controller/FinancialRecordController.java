@@ -9,6 +9,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -36,9 +38,13 @@ public class FinancialRecordController {
     @PreAuthorize("hasAnyRole('ADMIN','ANALYST','VIEWER')")
     @GetMapping("/user/{userId}")
     public ResponseEntity<ApiResponse<Page<FinancialRecordResponse>>> getRecordsByUser(
-            @PathVariable UUID userId, Pageable pageable) {
+            @PathVariable UUID userId,
+            @PageableDefault(page = 0, size = 20, sort = "transactionDate", direction = Sort.Direction.DESC) Pageable pageable) {
+
         Page<FinancialRecordResponse> records = recordService.getRecordsByUser(userId, pageable);
-        return ResponseEntity.ok(ApiResponseFactory.success(records, "Records fetched successfully", HttpStatus.OK.value()));
+        return ResponseEntity.ok(
+                ApiResponseFactory.success(records, "Records fetched successfully", HttpStatus.OK.value())
+        );
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -64,8 +70,11 @@ public class FinancialRecordController {
             @RequestParam LocalDate end,
             @RequestParam(required = false) String category,
             @RequestParam(required = false) String type,
-            Pageable pageable) {
+            @PageableDefault(page = 0, size = 20, sort = "transactionDate", direction = Sort.Direction.DESC) Pageable pageable) {
+
         Page<FinancialRecordResponse> records = recordService.filterRecords(userId, type, category, start, end, pageable);
-        return ResponseEntity.ok(ApiResponseFactory.success(records, "Filtered records fetched successfully", HttpStatus.OK.value()));
+        return ResponseEntity.ok(
+                ApiResponseFactory.success(records, "Filtered records fetched successfully", HttpStatus.OK.value())
+        );
     }
 }
