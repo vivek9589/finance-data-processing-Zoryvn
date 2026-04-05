@@ -8,6 +8,7 @@ import com.zorvyn.finance_data_processing.util.ApiResponseFactory;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -70,11 +71,24 @@ public class FinancialRecordController {
             @RequestParam LocalDate end,
             @RequestParam(required = false) String category,
             @RequestParam(required = false) String type,
-            @PageableDefault(page = 0, size = 20, sort = "transactionDate", direction = Sort.Direction.DESC) Pageable pageable) {
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(defaultValue = "transactionDate,desc") String sort) {
 
-        Page<FinancialRecordResponse> records = recordService.filterRecords(userId, type, category, start, end, pageable);
+        // Build Pageable manually
+        String[] sortParams = sort.split(",");
+        Pageable pageable = PageRequest.of(
+                page,
+                size,
+                Sort.by(Sort.Direction.fromString(sortParams[1]), sortParams[0])
+        );
+
+        Page<FinancialRecordResponse> records =
+                recordService.filterRecords(userId, type, category, start, end, pageable);
+
         return ResponseEntity.ok(
                 ApiResponseFactory.success(records, "Filtered records fetched successfully", HttpStatus.OK.value())
         );
     }
+
 }

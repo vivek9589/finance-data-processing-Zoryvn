@@ -247,13 +247,9 @@ public class FinancialRecordServiceImpl implements FinancialRecordService {
             throw new InvalidUserIdException("UserId must not be null");
         }
 
-        if (pageable == null) {
-            throw new InvalidPageRequestException("Pageable must not be null");
-        }
-
-        // Validate user existence and state
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
+
         if (user.isDeleted()) {
             throw new UserDeletedException("User with id " + userId + " is deleted");
         }
@@ -261,19 +257,6 @@ public class FinancialRecordServiceImpl implements FinancialRecordService {
             throw new UserInactiveException("User with id " + userId + " is inactive");
         }
 
-        // Validate type
-        if (type != null && !type.trim().isEmpty()) {
-            if (!List.of("INCOME", "EXPENSE").contains(type.toUpperCase())) {
-                throw new InvalidTypeException("Unsupported type: " + type);
-            }
-        }
-
-        // Validate category
-        if (category != null && category.trim().isEmpty()) {
-            throw new InvalidCategoryException("Category must not be blank");
-        }
-
-        // Validate date range
         if (start == null || end == null) {
             throw new InvalidDateException("Start and end dates must not be null");
         }
@@ -281,27 +264,17 @@ public class FinancialRecordServiceImpl implements FinancialRecordService {
             throw new InvalidDateException("Start date cannot be after end date");
         }
 
-        try {
-            Page<FinancialRecord> records =
-                    recordRepository.findByUserIdAndTypeAndCategoryAndTransactionDateBetweenAndIsDeletedFalse(
-                            userId, type, category, start, end, pageable);
+        Page<FinancialRecord> records = recordRepository.filterRecords(userId, type, category, start, end, pageable);
 
-            if (records.isEmpty()) {
-                throw new RecordNotFoundException("No records found for userId: " + userId +
-                        " between " + start + " and " + end);
-            }
+//        if (records.isEmpty()) {
+//            throw new RecordNotFoundException("No records found for userId: " + userId +
+//                    " between " + start + " and " + end);
+//        }
 
-            return records.map(this::mapToResponse);
-
-        } catch (DataAccessException ex) {
-            throw new DatabaseException("Error filtering records for userId: " + userId, ex);
-        }
+        return records.map(this::mapToResponse);
     }
 
     private FinancialRecordResponse mapToResponse(FinancialRecord record) {
-        if (record == null) {
-            throw new IllegalArgumentException("FinancialRecord cannot be null");
-        }
 
        
 
