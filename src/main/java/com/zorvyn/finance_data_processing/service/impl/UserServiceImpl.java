@@ -200,13 +200,13 @@ public class UserServiceImpl implements UserService {
 
     // simple mapper method inside service
     private UserResponse mapToResponse(User user) {
-        if (user == null) {
-            throw new IllegalArgumentException("User cannot be null");
-        }
-
-        if (user.getEmail() == null || user.getEmail().trim().isEmpty()) {
-            throw new InvalidUserException("User email is missing");
-        }
+//        if (user == null) {
+//            throw new IllegalArgumentException("User cannot be null");
+//        }
+//
+//        if (user.getEmail() == null || user.getEmail().trim().isEmpty()) {
+//            throw new InvalidUserException("User email is missing");
+//        }
 //
 //        if (user.isDeleted()) {
 //            throw new UserDeletedException("Cannot map deleted user with id: " + user.getId());
