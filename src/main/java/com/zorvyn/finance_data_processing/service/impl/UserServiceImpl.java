@@ -43,7 +43,6 @@ public class UserServiceImpl implements UserService {
         User user = User.builder()
                 .name(request.getName().trim())
                 .email(normalizedEmail)
-                .password(request.getPassword().trim())
                 .role(role)
                 .status(Status.ACTIVE)
                 .build();
@@ -76,7 +75,6 @@ public class UserServiceImpl implements UserService {
         return mapToResponse(user);
     }
 
-
     @Override
     public Page<UserResponse> getActiveUsers(Pageable pageable) {
         log.info("Fetching all active users");
@@ -87,7 +85,7 @@ public class UserServiceImpl implements UserService {
 
         try {
             Page<UserResponse> activeUsers = userRepository
-                    .findByStatusAndDeletedFalse(Status.ACTIVE, pageable)
+                    .findByStatusAndIsDeletedFalse(Status.ACTIVE, pageable)
                     .map(this::mapToResponse);
 
             if (activeUsers.isEmpty()) {
@@ -209,10 +207,10 @@ public class UserServiceImpl implements UserService {
         if (user.getEmail() == null || user.getEmail().trim().isEmpty()) {
             throw new InvalidUserException("User email is missing");
         }
-
-        if (user.isDeleted()) {
-            throw new UserDeletedException("Cannot map deleted user with id: " + user.getId());
-        }
+//
+//        if (user.isDeleted()) {
+//            throw new UserDeletedException("Cannot map deleted user with id: " + user.getId());
+//        }
 
         return UserResponse.builder()
                 .id(user.getId())

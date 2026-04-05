@@ -1,14 +1,15 @@
+
 CREATE TABLE financial_records (
-    id BINARY(16) PRIMARY KEY,
-    amount DECIMAL(15,2) NOT NULL,
+    id BINARY(16) NOT NULL PRIMARY KEY,
+    amount DECIMAL(19,2) NOT NULL CHECK (amount > 0),
     type VARCHAR(50) NOT NULL,
     category VARCHAR(100) NOT NULL,
-    description TEXT,
+    description VARCHAR(500),
     transaction_date DATE NOT NULL,
     user_id BINARY(16) NOT NULL,
-    is_deleted BOOLEAN DEFAULT FALSE NOT NULL,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP,
+    is_deleted BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT fk_financial_records_user FOREIGN KEY (user_id) REFERENCES users(id)
 );
 

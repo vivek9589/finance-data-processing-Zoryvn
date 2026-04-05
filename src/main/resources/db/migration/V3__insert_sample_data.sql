@@ -1,52 +1,35 @@
--- Insert sample users
-INSERT INTO users (id, name, email, password, role, status, is_deleted, created_at, updated_at)
-VALUES
-    (UUID_TO_BIN(UUID()), 'Alice Admin', 'alice.admin@example.com', 'password123', 'ADMIN', 'ACTIVE', FALSE, NOW(), NOW()),
-    (UUID_TO_BIN(UUID()), 'Bob Analyst', 'bob.analyst@example.com', 'password123', 'ANALYST', 'ACTIVE', FALSE, NOW(), NOW()),
-    (UUID_TO_BIN(UUID()), 'Charlie Viewer', 'charlie.viewer@example.com', 'password123', 'VIEWER', 'INACTIVE', FALSE, NOW(), NOW()),
-    (UUID_TO_BIN(UUID()), 'Diana Admin', 'diana.admin@example.com', 'password123', 'ADMIN', 'ACTIVE', FALSE, NOW(), NOW()),
-    (UUID_TO_BIN(UUID()), 'Ethan Analyst', 'ethan.analyst@example.com', 'password123', 'ANALYST', 'ACTIVE', FALSE, NOW(), NOW());
+-- V2__insert_sample_data.sql
 
--- Insert sample financial records (20 records)
-INSERT INTO financial_records (id, amount, type, category, description, transaction_date, user_id, is_deleted, created_at, updated_at)
+-- Insert sample users
+INSERT INTO users (id, name, email, role, status, is_deleted, created_at, updated_at)
 VALUES
-    (UUID_TO_BIN(UUID()), 5000.00, 'INCOME', 'Salary', 'Monthly salary credit', '2026-04-01',
-     (SELECT id FROM users WHERE email='alice.admin@example.com'), FALSE, NOW(), NOW()),
-    (UUID_TO_BIN(UUID()), 200.00, 'EXPENSE', 'Food', 'Dinner at restaurant', '2026-04-02',
-     (SELECT id FROM users WHERE email='bob.analyst@example.com'), FALSE, NOW(), NOW()),
-    (UUID_TO_BIN(UUID()), 1500.00, 'EXPENSE', 'Rent', 'Monthly apartment rent', '2026-04-03',
-     (SELECT id FROM users WHERE email='charlie.viewer@example.com'), FALSE, NOW(), NOW()),
-    (UUID_TO_BIN(UUID()), 300.00, 'EXPENSE', 'Transport', 'Cab rides', '2026-04-04',
-     (SELECT id FROM users WHERE email='alice.admin@example.com'), FALSE, NOW(), NOW()),
-    (UUID_TO_BIN(UUID()), 1200.00, 'INCOME', 'Freelance', 'Freelance project payment', '2026-04-05',
-     (SELECT id FROM users WHERE email='bob.analyst@example.com'), FALSE, NOW(), NOW()),
-    (UUID_TO_BIN(UUID()), 450.00, 'EXPENSE', 'Shopping', 'Groceries and essentials', '2026-04-06',
-     (SELECT id FROM users WHERE email='charlie.viewer@example.com'), FALSE, NOW(), NOW()),
-    (UUID_TO_BIN(UUID()), 250.00, 'EXPENSE', 'Entertainment', 'Movie tickets', '2026-04-07',
-     (SELECT id FROM users WHERE email='diana.admin@example.com'), FALSE, NOW(), NOW()),
-    (UUID_TO_BIN(UUID()), 600.00, 'EXPENSE', 'Utilities', 'Electricity bill', '2026-04-08',
-     (SELECT id FROM users WHERE email='ethan.analyst@example.com'), FALSE, NOW(), NOW()),
-    (UUID_TO_BIN(UUID()), 8000.00, 'INCOME', 'Bonus', 'Annual performance bonus', '2026-04-09',
-     (SELECT id FROM users WHERE email='alice.admin@example.com'), FALSE, NOW(), NOW()),
-    (UUID_TO_BIN(UUID()), 100.00, 'EXPENSE', 'Food', 'Breakfast at cafe', '2026-04-10',
-     (SELECT id FROM users WHERE email='bob.analyst@example.com'), FALSE, NOW(), NOW()),
-    (UUID_TO_BIN(UUID()), 2200.00, 'EXPENSE', 'Rent', 'Apartment rent', '2026-04-11',
-     (SELECT id FROM users WHERE email='charlie.viewer@example.com'), FALSE, NOW(), NOW()),
-    (UUID_TO_BIN(UUID()), 350.00, 'EXPENSE', 'Transport', 'Fuel expenses', '2026-04-12',
-     (SELECT id FROM users WHERE email='diana.admin@example.com'), FALSE, NOW(), NOW()),
-    (UUID_TO_BIN(UUID()), 500.00, 'EXPENSE', 'Shopping', 'Clothes purchase', '2026-04-13',
-     (SELECT id FROM users WHERE email='ethan.analyst@example.com'), FALSE, NOW(), NOW()),
-    (UUID_TO_BIN(UUID()), 700.00, 'EXPENSE', 'Entertainment', 'Concert tickets', '2026-04-14',
-     (SELECT id FROM users WHERE email='alice.admin@example.com'), FALSE, NOW(), NOW()),
-    (UUID_TO_BIN(UUID()), 400.00, 'EXPENSE', 'Utilities', 'Water bill', '2026-04-15',
-     (SELECT id FROM users WHERE email='bob.analyst@example.com'), FALSE, NOW(), NOW()),
-    (UUID_TO_BIN(UUID()), 9500.00, 'INCOME', 'Salary', 'Monthly salary credit', '2026-04-16',
-     (SELECT id FROM users WHERE email='charlie.viewer@example.com'), FALSE, NOW(), NOW()),
-    (UUID_TO_BIN(UUID()), 180.00, 'EXPENSE', 'Food', 'Lunch with colleagues', '2026-04-17',
-     (SELECT id FROM users WHERE email='diana.admin@example.com'), FALSE, NOW(), NOW()),
-    (UUID_TO_BIN(UUID()), 270.00, 'EXPENSE', 'Transport', 'Train tickets', '2026-04-18',
-     (SELECT id FROM users WHERE email='ethan.analyst@example.com'), FALSE, NOW(), NOW()),
-    (UUID_TO_BIN(UUID()), 1500.00, 'EXPENSE', 'Shopping', 'Electronics purchase', '2026-04-19',
-     (SELECT id FROM users WHERE email='alice.admin@example.com'), FALSE, NOW(), NOW()),
-    (UUID_TO_BIN(UUID()), 300.00, 'EXPENSE', 'Entertainment', 'Streaming subscription', '2026-04-20',
-     (SELECT id FROM users WHERE email='bob.analyst@example.com'), FALSE, NOW(), NOW());
+    (UUID_TO_BIN(UUID()), 'Alice Admin', 'alice.admin@example.com', 'ADMIN', 'ACTIVE', FALSE, '2026-04-04 15:54:44', '2026-04-04 15:54:44'),
+    (UUID_TO_BIN(UUID()), 'Bob Analyst', 'bob.analyst@example.com', 'ANALYST', 'ACTIVE', FALSE, '2026-04-04 15:54:54', '2026-04-04 15:54:54'),
+    (UUID_TO_BIN(UUID()), 'Charlie Viewer', 'charlie.viewer@example.com', 'VIEWER', 'ACTIVE', FALSE, '2026-04-04 15:55:03', '2026-04-04 15:55:03');
+
+-- Insert credentials (linking by user_id)
+-- Make sure to match the UUIDs generated above if you want deterministic mapping
+INSERT INTO user_credentials (user_id, password_hash, is_active)
+SELECT id, '$2a$10$Cajovkdj.iEwnUAQI4NuOed3362qTUZHOtYfn882hcL/zWUU7ATo2', TRUE
+FROM users WHERE email = 'alice.admin@example.com';
+
+INSERT INTO user_credentials (user_id, password_hash, is_active)
+SELECT id, '$2a$10$KAUpJXA/UHCzVq4QkBBL.ujPtA9sRVfSRnty47CEkNbAK2Cnn9SC.', TRUE
+FROM users WHERE email = 'bob.analyst@example.com';
+
+INSERT INTO user_credentials (user_id, password_hash, is_active)
+SELECT id, '$2a$10$CJG2WgdOKybUgdvbxGsXbeE76uHNmtN6/dVbj0c5ynrEDfDMV.3G6', TRUE
+FROM users WHERE email = 'charlie.viewer@example.com';
+
+-- Insert sample financial records
+INSERT INTO financial_records (id, amount, type, category, description, transaction_date, user_id, is_deleted, created_at, updated_at)
+SELECT UUID_TO_BIN(UUID()), 1500.00, 'INCOME', 'SALARY', 'Monthly salary credit', '2026-04-01', id, FALSE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+FROM users WHERE email = 'alice.admin@example.com';
+
+INSERT INTO financial_records (id, amount, type, category, description, transaction_date, user_id, is_deleted, created_at, updated_at)
+SELECT UUID_TO_BIN(UUID()), 300.00, 'EXPENSE', 'FOOD', 'Team lunch', '2026-04-02', id, FALSE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+FROM users WHERE email = 'bob.analyst@example.com';
+
+INSERT INTO financial_records (id, amount, type, category, description, transaction_date, user_id, is_deleted, created_at, updated_at)
+SELECT UUID_TO_BIN(UUID()), 200.00, 'EXPENSE', 'TRAVEL', 'Cab fare', '2026-04-03', id, FALSE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+FROM users WHERE email = 'charlie.viewer@example.com';

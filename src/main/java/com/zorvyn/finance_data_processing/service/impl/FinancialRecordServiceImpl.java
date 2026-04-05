@@ -303,9 +303,7 @@ public class FinancialRecordServiceImpl implements FinancialRecordService {
             throw new IllegalArgumentException("FinancialRecord cannot be null");
         }
 
-        if (record.getIsDeleted()) {
-            throw new RecordDeletedException("Cannot map deleted record with id: " + record.getId());
-        }
+       
 
         return FinancialRecordResponse.builder()
                 .id(record.getId())
