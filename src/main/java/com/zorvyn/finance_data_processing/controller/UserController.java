@@ -9,6 +9,7 @@ import com.zorvyn.finance_data_processing.service.UserService;
 import com.zorvyn.finance_data_processing.util.ApiResponseFactory;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -35,9 +36,12 @@ public class UserController {
                 .body(ApiResponseFactory.success(saved, "User created successfully", HttpStatus.CREATED.value()));
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','ANALYST')")
+
+
     @GetMapping("/active")
+    @PreAuthorize("hasAnyRole('ADMIN','ANALYST')")
     public ResponseEntity<ApiResponse<Page<UserResponse>>> getActiveUsers(
+            @ParameterObject
             @PageableDefault(page = 0, size = 20, sort = "email", direction = Sort.Direction.ASC) Pageable pageable) {
 
         Page<UserResponse> users = userService.getActiveUsers(pageable);
